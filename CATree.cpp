@@ -63,7 +63,7 @@ void BuildCATree(std::vector<Node *> &Nodes, double p)
             // double Distance = GetDR(NodesEta[i], NodesPhi[i], NodesEta[j], NodesPhi[j]);
             double Distance = GetDR(Nodes[i]->P, Nodes[j]->P);
             if(p != 0)
-               Distance = Distance * pow(std::min(Nodes[i]->P.GetPT(), Nodes[j]->P.GetPT()), p);
+               Distance = Distance * pow(std::min(Nodes[i]->P.GetPT(), Nodes[j]->P.GetPT()), 2 * p);
 
             if(Distance < BestDistance || BestDistance < 0)
             {
