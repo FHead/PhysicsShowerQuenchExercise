@@ -5,8 +5,8 @@
 default: TestRun
 
 TestRun: Execute
-	./Execute --Input workshopexercise10k_1.hepmc --Output test.out
-	cat test.out | TextToTree test.root 6 "JetPT:JetEta:JetPhi:CAELoss:TimeELoss:KTELoss"
+	./Execute --Input workshopexercise100k_1.hepmc --Output test.out
+	# cat test.out | TextToTree test.root 6 "JetPT:JetEta:JetPhi:CAELoss:TimeELoss:KTELoss"
 
 Execute: EvaluateEnergyLoss.cpp CATree.o TauHelperFunctions3.o
 	g++ EvaluateEnergyLoss.cpp -o Execute TauHelperFunctions3.o CATree.o -std=c++17 \
