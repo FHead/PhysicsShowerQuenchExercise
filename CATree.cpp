@@ -387,21 +387,48 @@ void AssignTime(Node *N)
 {
    if(N == nullptr)
       return;
+   if(N->Parent == nullptr)
+   {
+      N->V[0] = 0;
+      return;
+   }
 
-   double SoFar = 0;
+   FourVector SoFar(0, 0, 0, 0);
    if(N->Parent != nullptr)
-      SoFar = N->Parent->V[0];
+      SoFar = N->Parent->V;
 
    double E = N->Parent->P[0];
-   double M = N->Parent->P.GetMass();
-   if(M == 0)
-      M = 0.135;
-   double T = E / M / M;
+   double Q2 = N->Parent->P.GetMass2();   // this is virtuality2
+   double Time = 9999;
+   if(Q2 > 0)
+      Time = E / Q2 * 0.197;   // the 0.197 is the conversion from GeV^-1 to fm
 
-   N->V[0] = SoFar + T;   // everything is in energy units
+   FourVector DV = N->Parent->P;
+   DV = DV / DV.GetP();
+   DV[0] = 1;
+
+   DV = DV * Time;
+
+   N->V = SoFar + DV;
    AssignTime(N->Child1);
    AssignTime(N->Child2);
 }
 
+void AssignQG(Node *N)
+{
+   if(N == nullptr)
+      return;
+
+   AssignQG(N->Child1);
+   AssignQG(N->Child2);
+
+   if(N->Child1 != nullptr && N->Child2 != nullptr)
+   {
+      if(N->Child1->QG == N->Child2->QG)
+         N->QG = TYPE_GLUON;
+      else
+         N->QG = TYPE_QUARK;
+   }
+}
 
 

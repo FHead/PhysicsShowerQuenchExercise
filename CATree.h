@@ -3,6 +3,9 @@
 
 #include "TauHelperFunctions3.h"
 
+#define TYPE_QUARK 0
+#define TYPE_GLUON 1
+
 class Node;
 struct NodePair;
 void BuildCATree(std::vector<Node *> &Nodes, double p);
@@ -14,12 +17,14 @@ int NodeDistance(Node *Child, Node *Root);
 double SDCSum(std::vector<std::pair<double, double>> &Z, double Kappa);
 std::pair<double, double> WinnerTakesAllAxis(Node *N);
 void AssignTime(Node *N);
+void AssignQG(Node *N);
 
 class Node
 {
 public:
    FourVector P;
    FourVector V;
+   int QG;
    Node *Child1;
    Node *Child2;
    Node *Parent;
