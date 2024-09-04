@@ -398,10 +398,10 @@ void AssignTime(Node *N)
       SoFar = N->Parent->V;
 
    double E = N->Parent->P[0];
-   double Q2 = N->Parent->P.GetMass2();   // this is virtuality2
+   double Q2 = N->Parent->P.GetMass2();   // this is virtuality^2
    double Time = 9999;
    if(Q2 > 0)
-      Time = E / Q2 * 0.197;   // the 0.197 is the conversion from GeV^-1 to fm
+      Time = 2 * E / Q2 * 0.197;   // the 0.197 is the conversion from GeV^-1 to fm
 
    FourVector DV = N->Parent->P;
    DV = DV / DV.GetP();

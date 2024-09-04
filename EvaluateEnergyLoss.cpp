@@ -91,67 +91,56 @@ void RunAnalysis(vector<PseudoJet> &V, ofstream &out)
 {
    JetDefinition Definition(antikt_algorithm, 0.4);
    ClusterSequence Sequence(V, Definition);
-   vector<PseudoJet> FastJets = sorted_by_pt(Sequence.inclusive_jets(0));
+   vector<PseudoJet> FastJets = sorted_by_pt(Sequence.inclusive_jets(5));
 
-   vector<FourVector> Particles;
-   vector<bool> IsQuark;
-   PseudoJet Jet = FastJets[0];
-   vector<PseudoJet> Constituents = Jet.constituents();
-   for(int i = 0; i < Constituents.size(); i++)
+   for(int iJ = 0; iJ < (int)FastJets.size(); iJ++)
    {
-      PseudoJet &J = Constituents[i];
-      FourVector P(J.e(), J.px(), J.py(), J.pz());
-      Particles.push_back(P);
-      IsQuark.push_back(abs(J.user_index()) <= 6);
-   }
-
-   if(Particles.size() == 0)
-      return;
-
-   // cout << Jet.perp() << endl;
-
-   out << Jet.perp() << " " << Jet.eta() << " " << Jet.phi();
-
-   double PValues[] = {0.0, 0.5, 1.0};
-
-   for(double p : PValues)
-   {
-      // cout << p << endl;
-
-      vector<Node *> Nodes;
-      for(int i = 0; i < (int)Particles.size(); i++)
+      vector<FourVector> Particles;
+      vector<bool> IsQuark;
+      PseudoJet Jet = FastJets[iJ];
+      vector<PseudoJet> Constituents = FastJets[iJ].constituents();
+      for(int i = 0; i < Constituents.size(); i++)
       {
-         Node *N = new Node(Particles[i]);
-         N->QG = IsQuark[i] ? TYPE_QUARK : TYPE_GLUON;
-         Nodes.push_back(N);
+         PseudoJet &J = Constituents[i];
+         FourVector P(J.e(), J.px(), J.py(), J.pz());
+         Particles.push_back(P);
+         IsQuark.push_back(abs(J.user_index()) <= 6);
       }
 
-      BuildCATree(Nodes, p);
-      AssignTime(Nodes[0]);
-      AssignQG(Nodes[0]);
+      if(Particles.size() == 0)
+         continue;
 
-      // Now we extract information we want from the tree
+      // cout << Jet.perp() << endl;
 
-      /*
-      Node *N = Nodes[0];
-      while(N != nullptr)
+      out << Jet.perp() << " " << Jet.eta() << " " << Jet.phi();
+
+      double PValues[] = {0.0, 0.5, 1.0};
+
+      for(double p : PValues)
       {
-         double E = N->P[0];
-         double Q2 = N->P.GetMass2();
-         
-         if(Q2 > 0)
-            out << " " << N->P[0] / N->P.GetMass2();
-         
-         N = N->Child1;
+         // cout << p << endl;
+
+         vector<Node *> Nodes;
+         for(int i = 0; i < (int)Particles.size(); i++)
+         {
+            Node *N = new Node(Particles[i]);
+            N->QG = IsQuark[i] ? TYPE_QUARK : TYPE_GLUON;
+            Nodes.push_back(N);
+         }
+
+         BuildCATree(Nodes, p);
+         AssignTime(Nodes[0]);
+         AssignQG(Nodes[0]);
+
+         // Now we extract information we want from the tree
+
+         out << " " << GetTotalELoss(Nodes[0]);
+
+         delete Nodes[0];
       }
-      */
 
-      out << " " << GetTotalELoss(Nodes[0]);
-
-      delete Nodes[0];
+      out << endl;
    }
-      
-   out << endl;
 }
 
 double dEdx(int Type, double T, double x)
@@ -169,17 +158,10 @@ double ParticleELoss(Node *N)
 
    double ELoss = 0;
 
-   // Velocity vector
-   FourVector V = N->P;
-   V = V / V.GetP();
-   V[0] = 1;
-
    double E = N->P[0];
    double Q2 = N->P.GetMass();
-   double t = (Q2 > 0) ? (E / Q2) : 50;
+   double t = (Q2 > 0) ? (2 * E / Q2) : 50;   // set to 50 if virtuality is 0
 
-   // double XInitial = N->V.GetP();
-   // double XFinal = XInitial + V.GetP() * t;
    double XInitial = N->V[0];
    double XFinal = XInitial + t;
 
@@ -190,10 +172,7 @@ double ParticleELoss(Node *N)
       double DX = (XFinal - XInitial) / NStep;
       double X = XInitial + DX * (i + 0.5);
 
-      // double Time = N->V[0] + t / NStep * (i + 0.5);
-      double Time = X;
-
-      double DE = dEdx(N->QG, GetT(Time), X) * DX;
+      double DE = dEdx(N->QG, GetT(X), X) * DX;
 
       ELoss = ELoss + DE;
    }
