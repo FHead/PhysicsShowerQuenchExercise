@@ -148,15 +148,15 @@ double dEdx(int Type, double T, double x)
    double KRad = 4;
    double CRCF = (Type == TYPE_GLUON) ? 2.25 : 1;
 
-   // return KRad * CRCF * T * T * T * x * 0.197 * 0.197;
+   return KRad * CRCF * T * T * T * x * 0.197 * 0.197;
    
    // double KColl = 2.5;
    
    // return KColl * CRCF * T * T * 0.197 * 0.5;
    
-   if(T > 0)
-      return 1;
-   return 0;
+   // if(T > 0)
+   //    return 1;
+   // return 0;
 }
 
 double ParticleELoss(Node *N)
