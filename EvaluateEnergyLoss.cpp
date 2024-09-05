@@ -112,7 +112,7 @@ void RunAnalysis(vector<PseudoJet> &V, ofstream &out)
 
       // cout << Jet.perp() << endl;
 
-      out << Jet.perp() << " " << Jet.eta() << " " << Jet.phi();
+      out << Jet.perp() << " " << Jet.eta() << " " << Jet.phi() << " " << Constituents.size();
 
       double PValues[] = {0.0, 0.5, 1.0};
 
@@ -148,7 +148,15 @@ double dEdx(int Type, double T, double x)
    double KRad = 4;
    double CRCF = (Type == TYPE_GLUON) ? 2.25 : 1;
 
-   return KRad * CRCF * T * T * T * x * 0.197 * 0.197;
+   // return KRad * CRCF * T * T * T * x * 0.197 * 0.197;
+   
+   // double KColl = 2.5;
+   
+   // return KColl * CRCF * T * T * 0.197 * 0.5;
+   
+   if(T > 0)
+      return 1;
+   return 0;
 }
 
 double ParticleELoss(Node *N)
@@ -159,14 +167,15 @@ double ParticleELoss(Node *N)
    double ELoss = 0;
 
    double E = N->P[0];
-   double Q2 = N->P.GetMass();
-   double t = (Q2 > 0) ? (2 * E / Q2) : 50;   // set to 50 if virtuality is 0
+   double Q2 = N->P.GetMass2();
+   double t = (Q2 > 0) ? (2 * E / Q2) : 50;   // set to some large number (=50) if virtuality is 0
+   t = t * 0.197;
 
    double XInitial = N->V[0];
    double XFinal = XInitial + t;
 
    // brute force for now
-   double NStep = 1000;
+   double NStep = 2000;
    for(int i = 0; i < NStep; i++)
    {
       double DX = (XFinal - XInitial) / NStep;
@@ -199,6 +208,7 @@ double GetTotalELoss(Node *N)
       return 0;
 
    return GetTotalELoss(N->Child1) + GetTotalELoss(N->Child2) + ParticleELoss(N);
+   // return GetTotalELoss(N->Child1) + ParticleELoss(N);
 }
 
 
