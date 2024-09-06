@@ -17,7 +17,7 @@ Clone this repository and do ``make''.  You will need fastjet installed (if fast
 
 ## Output file format
 
-6 columns: jet PT, jet eta, jet phi, eloss p = 0, eloss p = 0.5, eloss p = 1
+7 columns: jet PT, jet eta, jet phi, constituents, eloss p = 0, eloss p = 0.5, eloss p = 1
 each row is a jet
 
 
