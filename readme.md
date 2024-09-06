@@ -9,10 +9,13 @@ We start from some preexisting hepmc2 input files, and the code runs
 - for each setting, integrate some pre-existing dE/dx on the lines
 - we report the outputs in the test.out text file
 
+If you want to try different new scenarios yourself, we typically only need to change the functions (T profile & dEdx) in the EvaluateEnergyLoss.cpp.  The rest are helper functions.
+
+
 
 ## Practically
 
-Clone this repository and do ``make''.  You will need fastjet installed (if fastjet-config is in the path it is ok)
+Clone this repository and do `make`.  You will need fastjet installed (if fastjet-config is in the path it is ok)
 
 
 ## Output file format
@@ -27,7 +30,7 @@ each row is a jet
 
 Here there are a few relevant functions
 - BuildCATree(vector<>, double): builds the parton shower tree.  Second parameter is the p in the generalized kt
-- AssignTime(...): go through the tree and assign time.  New function for this
+- AssignTime(...): go through the tree and assign time.  New function for this exercise.  In principle if things look good we don't need to touch this anymore.
 - AssignQG(...): go through the tree and assign q/g type.  If the two children are qq or gg, assign g.  If qg or gq, assign q.
 
 ### EvaluateEnergyLoss.cpp
