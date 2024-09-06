@@ -12,7 +12,7 @@ We start from some preexisting hepmc2 input files, and the code runs
 
 ## Practically
 
-Clone this repository and do ``make''.  You will need fastjet installed (if fastjet-config is in the path it's ok)
+Clone this repository and do ``make''.  You will need fastjet installed (if fastjet-config is in the path it is ok)
 
 
 ## Output file format
@@ -23,7 +23,22 @@ each row is a jet
 
 ## Some more information
 
+### CATree.h/CATree.cpp
 
+Here there are a few relevant functions
+- BuildCATree(vector<>, double): builds the parton shower tree.  Second parameter is the p in the generalized kt
+- AssignTime(...): go through the tree and assign time.  New function for this
+- AssignQG(...): go through the tree and assign q/g type.  If the two children are qq or gg, assign g.  If qg or gq, assign q.
+
+### EvaluateEnergyLoss.cpp
+
+The main program that does the energy loss calculation.  Functions...
+- main(...): the main function that reads hepmc2 file and calls RunAnalysis(...)
+- RunAnalysis(...): cluster jet with anti-kt, then for each clustered jet integrate energy loss
+- dEdx(...): calculates dE/dx given some parameters
+- ParticleELoss(...): integrate over one internal particle line
+- GetT(...): gets the temperature given some time.  Change medium assumptions here
+- GetTotalEnergyLoss(...): calls ParticleELoss(...) recursively and adds up everything
 
 
 
