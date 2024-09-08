@@ -168,8 +168,8 @@ double ParticleELoss(Node *N)
 
    double E = N->P[0];
    double Q2 = N->P.GetMass2();
-   double t = (Q2 > 0) ? (2 * E / Q2) : 50;   // set to some large number (=50) if virtuality is 0
-   t = t * 0.197;
+   double t = (Q2 > 0) ? (2 * E / Q2 * 0.197) : 50;   // set to some large number (=50) if virtuality is 0
+   // t = t * 0.197;
 
    double XInitial = N->V[0];
    double XFinal = XInitial + t;
@@ -181,7 +181,7 @@ double ParticleELoss(Node *N)
       double DX = (XFinal - XInitial) / NStep;
       double X = XInitial + DX * (i + 0.5);
 
-      double DE = dEdx(N->QG, GetT(X), X) * DX;
+      double DE = dEdx(N->QG, GetT(X), X - XInitial) * DX;
 
       ELoss = ELoss + DE;
    }
