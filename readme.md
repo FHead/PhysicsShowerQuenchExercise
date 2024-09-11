@@ -20,7 +20,7 @@ Clone this repository and do `make`.  You will need fastjet installed (if fastje
 
 ## Output file format
 
-7 columns: jet PT, jet eta, jet phi, constituents, eloss p = 0, eloss p = 0.5, eloss p = 1
+8 columns: event weight, jet PT, jet eta, jet phi, constituents, eloss p = 0, eloss p = 0.5, eloss p = 1
 each row is a jet
 
 

@@ -11,7 +11,7 @@ using namespace fastjet;
 #include "CommandLine.h"
 
 int main(int argc, char *argv[]);
-void RunAnalysis(vector<PseudoJet> &V, ofstream &out);
+void RunAnalysis(vector<PseudoJet> &V, ofstream &out, double Weight);
 double dEdx(int Type, double T, double x);
 double ParticleELoss(Node *N);
 double GetT(double Time);
@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
    ofstream out(OutputFileName);
 
    vector<PseudoJet> V;
+   double W;
 
    ifstream in(InputFileName);
    while(in)
@@ -57,9 +58,12 @@ int main(int argc, char *argv[])
       if(list[0] == "E")
       {
          if(V.size() > 0)
-            RunAnalysis(V, out);
+            RunAnalysis(V, out, W);
          V.clear();
          // MZHadron.EventWeight = stof(list[list.size()-1]);
+         
+         W = stof(list[13]);
+
          continue;
       }
       if(list[0] == "P")
@@ -80,14 +84,14 @@ int main(int argc, char *argv[])
       }
    }
    if(V.size() > 0)
-      RunAnalysis(V, out);
+      RunAnalysis(V, out, W);
 
    out.close();
 
    return 0;
 }
 
-void RunAnalysis(vector<PseudoJet> &V, ofstream &out)
+void RunAnalysis(vector<PseudoJet> &V, ofstream &out, double Weight)
 {
    JetDefinition Definition(antikt_algorithm, 0.4);
    ClusterSequence Sequence(V, Definition);
@@ -112,7 +116,7 @@ void RunAnalysis(vector<PseudoJet> &V, ofstream &out)
 
       // cout << Jet.perp() << endl;
 
-      out << Jet.perp() << " " << Jet.eta() << " " << Jet.phi() << " " << Constituents.size();
+      out << Weight << " " << Jet.perp() << " " << Jet.eta() << " " << Jet.phi() << " " << Constituents.size();
 
       double PValues[] = {0.0, 0.5, 1.0};
 
