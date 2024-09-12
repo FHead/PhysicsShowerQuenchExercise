@@ -5,9 +5,9 @@
 default: TestRun
 
 TestRun: Execute
-	wget https://cernbox.cern.ch/remote.php/dav/public-files/7ST6Uclh5VjJnt7/workshopexercise10k_1.hepmc
+	wget -N https://cernbox.cern.ch/remote.php/dav/public-files/7ST6Uclh5VjJnt7/workshopexercise10k_1.hepmc
 	./Execute --Input workshopexercise10k_1.hepmc --Output test.out
-	# cat test.out | TextToTree test.root 6 "JetPT:JetEta:JetPhi:CAELoss:TimeELoss:KTELoss"
+	# cat test.out | TextToTree test.root 9 "Weight:JetPT:JetEta:JetPhi:NConst:CAELoss:TimeELoss:KTELoss:AKTELoss"
 
 Execute: EvaluateEnergyLoss.cpp CATree.o TauHelperFunctions3.o
 	g++ EvaluateEnergyLoss.cpp -o Execute TauHelperFunctions3.o CATree.o -std=c++17 \
