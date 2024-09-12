@@ -118,7 +118,7 @@ void RunAnalysis(vector<PseudoJet> &V, ofstream &out, double Weight)
 
       out << Weight << " " << Jet.perp() << " " << Jet.eta() << " " << Jet.phi() << " " << Constituents.size();
 
-      double PValues[] = {0.0, 0.5, 1.0};
+      double PValues[] = {0.0, 0.5, 1.0, -1.0};
 
       for(double p : PValues)
       {
